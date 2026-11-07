@@ -1,92 +1,55 @@
 # Scrap Sale Analysis Dashboard
 
-An Excel dashboard analyzing scrap sale transaction data — built using pivot tables, pivot charts, and Excel formulas (SUMIFS, COUNTIFS, AVERAGE, SUBTOTAL) to summarize revenue, transactions, and buyer performance over time.
+An Excel dashboard that analyses scrap sale transactions. It uses cleaned data, formulas, pivot tables and charts to show revenue, transactions and buyer performance over time.
 
-## 📊 Data Range
+## Data
+- **Period:** 26-Jan-2022 to 23-Jul-2025
+- **Records:** 1,096 invoice lines (after cleaning)
+- **File:** `Scrap_Sale_Analysis_Dashboard_Updated.xlsx`
 
-- **Period covered:** 26-Jan-2022 to 23-Jul-2025
-- **Source:** Scrap_Sale transaction log
+## Data Cleaning
+- Renamed messy column headers to simple names (for example, "TOTAL AMOUNT RS." became "Total Amount")
+- Removed extra rows (1,098 reduced to 1,096)
+- Converted the data into an Excel Table (`Scrap_Sale2`) so formulas use clear structured references
 
-## 📁 Workbook Structure
-
+## Workbook Structure
 | Sheet | Description |
 |---|---|
-| **DashBoard** | Main visual dashboard — KPI summary, tables, and charts |
-| **Sheet2** | Pivot tables powering part of the dashboard (Top Buyers, Monthly Revenue Trend) |
-| **Scrap_Sale** | Raw transaction data (invoice-level records) |
-| **Item_Codes** | Reference table mapping item codes to categories |
+| Dashboard | KPI cards, summary tables and charts |
+| Pivots | Pivot tables for Top 10 Buyers and Monthly Revenue Trend |
+| Scrap_Sale (2) | Cleaned transaction data (used by the dashboard) |
+| Scrap_Sale | Original raw data |
+| Item_Codes | Reference table that maps item codes to categories |
 
-## 📈 Dashboard Overview
+## Dashboard Contents
+**KPI cards:** Total Revenue, Total Transactions, Unique Buyers, Average Transaction Value, VAT Collected
 
-### Key Metrics (KPI cards)
-- Total Revenue (Rs.)
-- Total Transactions
-- Unique Buyers
-- Average Transaction Value (Rs.)
-- VAT Collected
+**Tables:** Revenue by Category, Revenue by Hazard Status, Revenue by Disposed Method, Top 10 Buyers
 
-### Tables & Breakdowns
-- **Revenue by Category** — Cardboard, Polymers, Metal, Oil, Wooden, Electronic, E-Waste, N/A
-- **Revenue by Hazard Status** — Hazard vs Non-Hazard split
-- **Revenue by Disposed Method** — Recycle, Reuse, N/A
-- **Top 10 Buyers by Revenue** — ranked by total revenue and transaction count (pivot table)
-- **Monthly Revenue Trend** — revenue grouped by Year and Month, Jan-22 through Jul-25 (pivot table)
-
-### Charts
+**Charts:**
 - Revenue by Category (bar chart)
-- Revenue by Disposal Method (pie chart)
+- Revenue by Disposed Method (pie chart)
+- Revenue by Hazard Status (pie chart)
 - Top 10 Buyers by Revenue (bar chart)
 - Monthly Revenue Trend (line chart)
-- Revenue Share: Hazard Status (pie chart)
 
-## 🧮 Formulas Used
+## Formulas and Tools Used
+- `SUMIFS`, `COUNTIFS`, `AVERAGE`, `SUBTOTAL`, `IFERROR`, `ROUND`
+- Excel Tables and structured references
+- PivotTables and PivotCharts (grouped by year and month)
 
-The KPI cards and category/hazard/disposal-method tables on the DashBoard sheet are built with live Excel formulas (not static pivot values), so they recalculate automatically as the underlying `Scrap_Sale` data changes.
-
-**KPI Cards**
-```excel
-Total Revenue          = SUM(Scrap_Sale!N2:N1099)
-Total Transactions     = SUBTOTAL(103, Scrap_Sale[INVOICE NO])
-Avg Transaction Value  = AVERAGE(Scrap_Sale[TOTAL AMOUNT RS.])
-VAT Collected          = SUM(Scrap_Sale[VAT])
+Example:
+```
+Revenue by Category = SUMIFS(Scrap_Sale2[Total Amount], Scrap_Sale2[Category], $B12)
 ```
 
-**Revenue by Category table**
-```excel
-Revenue (Rs.)   = SUMIFS(Scrap_Sale!$N$2:$N$1099, Scrap_Sale!$I$2:$I$1099, $B12)
-Transactions    = COUNTIFS(Scrap_Sale!$I$2:$I$1099, $B12)
-Avg Value (Rs.) = IFERROR(C12/D12, 0)
-% of Total      = C12/$B$6
-```
+## Key Insights
+- Total revenue is about **Rs. 22.3 million** from 1,096 transactions and 207 unique buyers.
+- **Cardboard (69%)** and **Polymers (28%)** together make up 97% of revenue.
+- The top buyer, **K Maheshwaran**, contributes about **51%** of total revenue, so the business depends heavily on one buyer.
+- **Non-Hazard** items bring 98.9% of revenue.
+- **Recycle** brings 83% of revenue, while **Reuse** has more transactions (728 vs 368).
+- **2024** was the best year (about Rs. 8.3 million), and the highest month was **March 2024**.
 
-**Revenue by Hazard Status table**
-```excel
-Revenue (Rs.) = SUMIFS(Scrap_Sale!$N$2:$N$1099, Scrap_Sale!$Q$2:$Q$1099, $H12)
-% of Total    = I12/$B$6
-```
-
-**Revenue by Disposed Method table**
-```excel
-Revenue (Rs.) = SUMIFS(Scrap_Sale[TOTAL AMOUNT RS.], Scrap_Sale[Disposed Method], H17)
-% of Total    = I17/$B$6
-```
-
-**Top 10 Buyers & Monthly Revenue Trend (Sheet2)**
-
-Built with native Excel **PivotTable Value Field Settings** rather than formulas:
-
-| Metric | Calculation Type |
-|---|---|
-| Sum of Revenue | Sum |
-| Monthly grouping | Group by Year + Month |
-
-## 🛠️ Tools Used
-
-- Microsoft Excel
-- Excel Tables & structured references (`Scrap_Sale[...]`)
-- SUMIFS / COUNTIFS / AVERAGE / SUBTOTAL / IFERROR
-- PivotTables & PivotCharts
-
-## ⚠️ Note
-
+## Note
 This dataset was used for training/practice purposes. Buyer names and contact details included are part of the original sample dataset.
